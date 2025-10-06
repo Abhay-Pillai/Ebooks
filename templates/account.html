@@ -1,0 +1,736 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Account</title>
+
+  <!-- Font Awesome CDN for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Your custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='account.css') }}" />
+</head>
+    
+<body>
+  <div class="wrapper">
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <a href="{{ url_for('profile') }}"
+          class = "account-link {% if active_tab == 'profile' %}active{% endif %}">
+          <i class="fa fa-user"></i>
+          <span>My Profile</span>
+        </a>
+
+        <!-- ✅ My Dashboard (NEW SECTION) -->
+        <a href="{{ url_for('dashboard') }}" 
+          class="account-link {% if active_tab == 'dashboard' %}active{% endif %}">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>My Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('wishlist') }}" 
+          class="account-link {% if active_tab == 'wishlist' %}active{% endif %}">
+          <i class="fas fa-clock"></i>
+          <span>My Wishlist</span>
+        </a>
+
+        <a href="{{ url_for('orders') }}" 
+          class="account-link {% if active_tab == 'orders' %}active{% endif %}">
+          <i class="fa fa-box"></i>
+          <span>My Orders</span>
+        </a>
+
+        <a href="{{ url_for('change_password') }}" 
+          class="account-link {% if active_tab == 'change_password' %}active{% endif %}">
+          <i class="fa fa-lock"></i>
+          <span>Change Password</span>
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="account-link {% if active_tab == 'logout' %}active{% endif %}">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Sign Out</span>
+        </a>
+      </nav>
+    </aside>
+
+  <main class="content-area">
+
+
+    <!-- PROFILE SECTION -->
+    <section class="profile-section {% if active_tab != 'profile' %}hidden{% endif %}">
+
+      <div class="profile-header">
+        <h1><i class="fa fa-user"></i> My Profile</h1>
+      </div>
+
+      <form class="profile-form" action="{{ url_for('update_profile') }}" method="POST" autocomplete="off">
+        <h2>Update Information</h2>
+
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div id="profileAlert" class="profile-alert">
+                {{ messages[0] }}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+        <div class="form-row">
+          <label for="full_name">Full Name</label>
+          <input type="text" id="full_name" name="full_name"
+                value="{{ row.full_name if row is defined else '' }}"
+                placeholder="Enter your full name" />
+        </div>
+
+        <div class="form-row">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="">Select</option>
+            <option value="Male"   {% if row is defined and row.gender == "Male" %}selected{% endif %}>Male</option>
+            <option value="Female" {% if row is defined and row.gender == "Female" %}selected{% endif %}>Female</option>
+            <option value="Other"  {% if row is defined and row.gender == "Other" %}selected{% endif %}>Other</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email"
+                value="{{ row.email if row is defined else '' }}"
+                placeholder="Enter your email" readonly />
+        </div>
+
+        <div class="form-row">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dob"
+                value="{{ row.dob if row is defined else '' }}" />
+        </div>
+
+        <div class="form-row">
+          <label for="phone">Phone No</label>
+          <input type="tel" id="phone" name="phone"
+                value="{{ row.phone if row is defined else '' }}"
+                placeholder="Enter your phone number" />
+        </div>
+
+        <div class="form-row">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city"
+                value="{{ row.city if row is defined else '' }}"
+                placeholder="Enter your city" />
+        </div>
+
+        <div class="form-row">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="country"
+                value="{{ row.country if row is defined else '' }}"
+                placeholder="Enter your country" />
+        </div>
+
+        <div class="form-row">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" rows="3"
+                    placeholder="Enter full address">{{ row.address if row is defined else '' }}</textarea>
+        </div>
+
+        <button type="submit" class="save-btn">Save Changes</button>
+      </form>
+    </section>
+
+    <!-- ✅ DASHBOARD SECTION -->
+    <section 
+      class="dashboard-section {% if active_tab != 'dashboard' %}hidden{% endif %}" 
+      style="max-height: 85vh; overflow-y: auto; padding-right: 8px; scroll-behavior: smooth;"
+    >
+      <div class="dashboard-header">
+        <h1><i class="fas fa-tachometer-alt"></i> My Dashboard</h1>
+      </div>
+
+      <!-- ✅ Cards Grid -->
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <i class="fas fa-box"></i>
+          <h3>Total Orders</h3>
+          <p>{{ total_orders }}</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Total Items in Cart</h3>
+          <p>{{ total_cart_items }}</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fas fa-clock"></i>
+          <h3>Total Books in Wishlist</h3>
+          <p>{{ total_wishlist_items }}</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fas fa-money-bill-wave"></i>
+          <h3>Cash On Delivery</h3>
+          <p>{{ total_cod_orders }}</p>
+        </div>
+
+        <div class="stat-card">
+          <i class="fas fa-credit-card"></i>
+          <h3>Online Payments</h3>
+          <p>{{ total_online_orders }}</p>
+        </div>
+      </div>
+
+      <!-- ✅ Chart Section -->
+      <div class="chart-container" style="margin-top: 25px; padding-bottom: 20px;">
+        <h2>Books Purchased by Category</h2>
+        <canvas id="salesChart"></canvas>
+      </div>
+    </section>
+
+    <!-- WATCHLIST SECTION -->
+    <section class="watchlist-section {% if active_tab != 'wishlist' %}hidden{% endif %}">
+      <div class="watchlist-header">
+        <h2><i class="fas fa-clock"></i> My Wishlist</h2>
+      </div>
+
+      <div class="watchlist-controls">
+      
+        <div class="search-bar">
+          <input type="text" placeholder="Search books..." />
+          <button class="watchlist-btn">Search</button>
+          <button class="watchlist-btn">Show All</button>
+        </div>
+      </div>
+
+      <div class="wishlist-table-wrapper">
+        <table class="wishlist-table">
+          <thead>
+            <tr>
+              <th>Book ID</th>
+              <th>Image</th>
+              <th>Book Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Subject</th>
+              <th>Price (₹)</th>
+              <th>Date Added</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for book in wishlist_items %}
+            <tr>
+              <td>{{ book.book_id }}</td>
+              <td>
+                <img src="{{ url_for('static', filename=book.image_url) }}" 
+                    alt="Book Image" 
+                    class="wishlist-book-img" />
+              </td>
+              <td>{{ book.book_title }}</td>
+              <td>{{ book.author }}</td>
+              <td>{{ book.category }}</td>
+              <td>{{ book.subject }}</td>
+              <td>{{ book.price }}</td>
+              <td>{{ book.added_date }}</td>
+              <td class="action-cell">
+                <div class="action-icons">
+                  <!-- View Details -->
+                  <a href="{{ url_for('book_details', category=book.category|lower, book_id=book.book_id) }}" 
+                    class="info-link" title="View Details">
+                    <i class="fas fa-info-circle info-icon"></i>
+                  </a>
+
+                  <!-- Add to Cart (Move from Wishlist) -->
+                  <i class="fas fa-cart-plus cart-icon"
+                    title="Move to Cart"
+                    data-book-id="{{ book.book_id }}"></i>
+
+                  <!-- Delete from Wishlist -->
+                  <a href="#" class="delete-link" 
+                    title="Remove from Wishlist"
+                    data-book-id="{{ book.book_id }}">
+                    <i class="fas fa-trash-alt delete-icon"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MY ORDERS SECTION -->
+    <section class="orders-section {% if active_tab != 'orders' %}hidden{% endif %}">
+      <div class="orders-header">
+        <h2><i class="fa fa-box"></i> My Orders</h2>
+      </div>
+
+      <div class="orders-controls">
+        <div class="search-bar">
+          <input type="text" id="orderSearch" placeholder="Search book..." />
+          <button class="watchlist-btn" id="orderSearchBtn">Search</button>
+          <button class="watchlist-btn" id="orderShowAllBtn">Show All</button>
+        </div>
+      </div>
+
+      <!-- ✅ Scrollable container -->
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Book ID</th>
+              <th>Book Name</th>
+              <th>Order Date</th>
+              <th>Shipping Date</th>
+              <th>Order Amount</th>
+              <th>Quantity</th>
+              <th>Shipping Address</th>
+              <th>Payment Status</th>
+              <th>Payment Mode</th>
+              <th>Order Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if orders %}
+              {% for order in orders %}
+                <tr>
+                  <td>{{ order.order_id }}</td>
+                  <td>{{ order.book_id }}</td>
+                  <td>{{ order.title }}</td>
+                  <td>{{ order.order_date }}</td>
+                  <td>{{ order.shipping_date }}</td>
+                  <td>₹{{ order.order_amount }}</td>
+                  <td>{{ order.quantity }}</td>
+                  <td>{{ order.shipping_address }}</td>
+                  <td>{{ order.payment_status }}</td>
+                  <td>{{ order.payment_mode }}</td>
+                  <td>{{ order.order_status }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="10" style="text-align:center;">No orders found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- Change Password Section -->
+    <section class="change-password-section {% if active_tab != 'change_password' %}hidden{% endif %}">
+    <div class="password-header">
+        <h2><i class="fa fa-lock"></i> Change Password</h2>
+      </div>
+
+      <form class="password-form" method="POST" action="/change_password">
+        <div class="password-row">
+          <label for="old-password">Old Password</label>
+          <input type="password" id="old-password" name="old-password" required />
+        </div>
+
+        <div class="password-row">
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" name="new-password"
+                pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$"
+                title="Password must be at least 10 characters, include letters, numbers, and 1 special character."
+                required />
+        </div>
+
+        <div class="password-row">
+          <label for="confirm-password">Confirm New Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" required />
+        </div>
+
+        <div class="password-bottom-row">
+          <label class="show-password-label">
+            <input type="checkbox" id="show-passwords" />
+            Show Passwords
+          </label>
+          <a href="#" class="forgot-password-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="save-password-btn">Save Changes</button>
+      </form>
+    </section>
+
+  </main>
+
+
+  <script>
+      
+      const links = document.querySelectorAll('.nav-link');
+      const contentTitle = document.querySelector('.content-area h1');
+
+      // ✅ Select all sections
+      const dashboardSection = document.querySelector('.dashboard-section');
+      const profileSection = document.querySelector('.profile-section');
+      const watchlistSection = document.querySelector('.watchlist-section');
+      const ordersSection = document.querySelector('.orders-section');
+      const passwordSection = document.querySelector('.change-password-section');
+
+      // ✅ Sidebar click logic
+      links.forEach(link => {
+        link.addEventListener('click', e => {
+          const tabName = link.querySelector('span').textContent.trim();
+
+          // ✅ Allow Flask to handle "My Dashboard"
+          if (tabName === 'My Dashboard') {
+            // Let it navigate to /dashboard route
+            return;
+          }
+
+          // ✅ Stop reload for all other tabs
+          e.preventDefault();
+
+          // Remove active state
+          links.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+
+          // Update header title
+          if (contentTitle) contentTitle.textContent = tabName;
+
+          // Hide all sections
+          dashboardSection?.classList.add('hidden');
+          profileSection?.classList.add('hidden');
+          watchlistSection?.classList.add('hidden');
+          ordersSection?.classList.add('hidden');
+          passwordSection?.classList.add('hidden');
+
+          // ✅ Show selected
+          if (tabName === 'My Profile') {
+            profileSection?.classList.remove('hidden');
+          } else if (tabName === 'My Wishlist') {
+            watchlistSection?.classList.remove('hidden');
+          } else if (tabName === 'My Orders') {
+            ordersSection?.classList.remove('hidden');
+          } else if (tabName === 'Change Password') {
+            passwordSection?.classList.remove('hidden');
+          }
+        });
+      });
+      
+      
+    
+      const orderSearchInput = document.getElementById("orderSearch");
+      const orderSearchBtn = document.getElementById("orderSearchBtn");
+      const orderShowAllBtn = document.getElementById("orderShowAllBtn");
+      const ordersTableBody = document.querySelector(".orders-table tbody");
+
+      // Function to filter rows by book title
+      function filterOrders(term) {
+        const rows = ordersTableBody.querySelectorAll("tr");
+        rows.forEach(row => {
+          const titleCell = row.cells[2]; // Book Name column index
+          if (!titleCell) return; // Skip header or invalid rows
+          const title = titleCell.textContent.toLowerCase();
+          row.style.display = title.includes(term.toLowerCase()) ? "" : "none";
+        });
+      }
+
+      // Search button click
+      orderSearchBtn.addEventListener("click", () => {
+        const term = orderSearchInput.value.trim();
+        filterOrders(term);
+      });
+
+      // Show All button click
+      orderShowAllBtn.addEventListener("click", () => {
+        orderSearchInput.value = "";
+        const rows = ordersTableBody.querySelectorAll("tr");
+        rows.forEach(row => row.style.display = "");
+      });
+
+      // Optional: Live search on typing
+      orderSearchInput.addEventListener("keyup", () => {
+        const term = orderSearchInput.value.trim();
+        filterOrders(term);
+      });
+      
+      const alertBox = document.getElementById("profileAlert");
+      if (alertBox) {
+        setTimeout(() => {
+          alertBox.style.transition = "opacity 0.5s ease";
+          alertBox.style.opacity = "0";
+          setTimeout(() => alertBox.remove(), 500);
+        }, 3000);
+      }
+      
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.querySelector(".search-bar input");
+        const searchBtn = document.querySelector(".search-bar .watchlist-btn:nth-child(2)");
+        const showAllBtn = document.querySelector(".search-bar .watchlist-btn:nth-child(3)");
+        const emptyBtn = document.querySelector(".empty-btn");
+        const wishlistTable = document.querySelector(".wishlist-table");
+        const wishlistTableBody = wishlistTable.querySelector("tbody");
+
+        // ✅ Store the original table rows so we can restore them later
+        const originalRows = Array.from(wishlistTableBody.querySelectorAll("tr"));
+
+        // ✅ Search Button: filter by book title
+        searchBtn.addEventListener("click", () => {
+          const query = searchInput.value.trim().toLowerCase();
+
+          if (!query) {
+            alert("Please enter a book name to search.");
+            return;
+          }
+
+          // Hide rows that don't match the title
+          let matchFound = false;
+          originalRows.forEach(row => {
+            const titleCell = row.children[2]; // Assuming 3rd column is Book Title
+            const titleText = titleCell.textContent.trim().toLowerCase();
+
+            if (titleText.includes(query)) {
+              row.style.display = "";
+              matchFound = true;
+            } else {
+              row.style.display = "none";
+            }
+          });
+
+          if (!matchFound) {
+            alert("No matching book found in your wishlist.");
+          }
+        });
+
+        // ✅ Show All Button: restore all hidden rows
+        showAllBtn.addEventListener("click", () => {
+          originalRows.forEach(row => {
+            row.style.display = "";
+          });
+          searchInput.value = "";
+        });
+
+      });
+
+      document.querySelectorAll(".delete-link").forEach(link => {
+        link.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const bookId = link.dataset.bookId;
+
+          if (!bookId) return alert("Book ID missing!");
+          if (!confirm("Are you sure you want to remove this book from your wishlist?")) return;
+
+          try {
+            const response = await fetch("/delete_from_wishlist", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ book_id: bookId }) // ✅ send as JSON
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // ✅ Optional: remove the row visually
+              const row = link.closest("tr");
+              if (row) {
+                row.style.transition = "opacity 0.3s";
+                row.style.opacity = "0";
+                setTimeout(() => row.remove(), 300);
+              } else {
+                location.reload(); // fallback
+              }
+            } else {
+              alert(result.message || "Failed to delete item.");
+            }
+          } catch (error) {
+            console.error("Delete Error:", error);
+            alert("Error deleting book.");
+          }
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        // Find all cart icons
+        const cartIcons = document.querySelectorAll(".cart-icon");
+
+        if (cartIcons.length === 0) {
+          console.warn("⚠️ No cart icons found on page. Check if .cart-icon is inside the correct table cell.");
+          return;
+        }
+
+        // Loop through all cart icons
+        cartIcons.forEach(icon => {
+          icon.addEventListener("click", e => {
+            e.preventDefault();
+            const bookId = icon.dataset.bookId;
+
+            if (!bookId) {
+              console.error("❌ No book ID found in data-book-id attribute.");
+              return;
+            }
+
+            console.log("🛒 Moving book to cart:", bookId);
+
+            fetch("/move_to_cart", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ book_id: bookId })
+            })
+            .then(res => {
+              if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+              return res.json();
+            })
+            .then(data => {
+              console.log("✅ Server Response:", data);
+
+              Swal.fire({
+                icon: data.success ? "success" : "error",
+                title: data.success ? "Added to Cart" : "Action Failed",
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+              });
+
+              // ✅ Refresh wishlist if successful
+              if (data.success) {
+                setTimeout(() => location.reload(), 1000);
+              }
+            })
+            .catch(err => {
+              console.error("❌ Fetch Error:", err);
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong. Please try again.",
+                timer: 2500,
+                showConfirmButton: false
+              });
+            });
+          });
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const statValues = document.querySelectorAll(".dashboard-grid .stat-card p");
+        const ctx = document.getElementById("salesChart");
+        let chartInstance = null;
+
+        // ✅ Fixed animateCounter: handles 0 properly
+        function animateCounter(element, endValue, duration = 1200) {
+          if (!Number.isFinite(endValue) || endValue <= 0) {
+            element.textContent = "0";
+            return;
+          }
+          let startValue = 0;
+          const stepTime = Math.max(Math.floor(duration / endValue), 20);
+          const counter = setInterval(() => {
+            startValue += 1;
+            element.textContent = startValue;
+            if (startValue >= endValue) clearInterval(counter);
+          }, stepTime);
+        }
+
+        // ✅ Render Chart.js
+        function renderChart(categories, totals) {
+          if (!ctx) return;
+          if (chartInstance) chartInstance.destroy();
+
+          if (!categories || categories.length === 0) {
+            ctx.parentElement.innerHTML = `<p style="text-align:center; color:gray;">No category purchase data available.</p>`;
+            return;
+          }
+
+          chartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: categories,
+              datasets: [{
+                label: "Books Purchased",
+                data: totals,
+                backgroundColor: ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#6366F1", "#06B6D4"],
+                borderColor: "#1E3A8A",
+                borderWidth: 1.5
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: "Books Purchased by Category",
+                  font: { size: 16 }
+                }
+              },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: "#111" }, grid: { color: "#ddd" } },
+                x: { ticks: { color: "#111" }, grid: { color: "transparent" } }
+              },
+              animation: { duration: 1300, easing: "easeOutQuart" }
+            }
+          });
+        }
+
+        // ✅ Fetch dashboard data
+        async function loadDashboardData() {
+          try {
+            const response = await fetch("/dashboard-data");
+            const data = await response.json();
+            if (data.error) return console.warn("Dashboard data issue:", data.error);
+
+            const values = [
+              data.total_orders || 0,
+              data.total_cart_items || 0,
+              data.total_wishlist_items || 0,
+              data.total_cod_orders || 0,
+              data.total_online_orders || 0
+            ];
+
+            statValues.forEach((el, i) => animateCounter(el, values[i]));
+            renderChart(data.categories || [], data.totals || []);
+          } catch (err) {
+            console.error("Dashboard Fetch Error:", err);
+          }
+        }
+
+        loadDashboardData();
+      });
+
+      document.querySelector(".password-form").addEventListener("submit", async function(e) {
+          e.preventDefault();
+
+          const oldPass = document.getElementById("old-password").value;
+          const newPass = document.getElementById("new-password").value;
+          const confirmPass = document.getElementById("confirm-password").value;
+
+          if (newPass !== confirmPass) {
+              alert("New password and confirm password do not match!");
+              return;
+          }
+
+          try {
+              const response = await fetch("/change_password", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ old_password: oldPass, new_password: newPass })
+              });
+
+              const result = await response.json();
+              alert(result.message);
+
+              if (result.success) {
+                  document.querySelector(".password-form").reset();
+              }
+          } catch (err) {
+              console.error(err);
+              alert("Error while changing password!");
+          }
+      });
+
+      // ✅ Show/Hide Passwords
+      document.getElementById("show-passwords").addEventListener("change", function() {
+          const inputs = ["old-password", "new-password", "confirm-password"];
+          inputs.forEach(id => {
+              document.getElementById(id).type = this.checked ? "text" : "password";
+          });
+      });
+  </script>
+
+
+</body>
+</html>

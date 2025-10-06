@@ -1,0 +1,267 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+/* Navbar basics */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+}
+
+.menu li:hover {
+  background: #444;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background: #444;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 220px;
+  z-index: 10;
+}
+
+.dropdown-menu li a {
+  padding: 10px;
+  display: block;
+  color: white;
+}
+
+.dropdown-menu li a:hover {
+  background: #555;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+/* ✅ Style the search input */
+#searchInput {
+  position: relative;
+  z-index: 10;
+}
+/* 📚 Search Suggestions Dropdown */
+.suggestions {
+  position: absolute;
+  top: 42px; /* Adjust to sit right below the input box */
+  left: 0;
+  width: 240px; /* match your input width */
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 9999; /* ensure above other elements */
+  display: none;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Suggestion item */
+.suggestions li {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.suggestions li:hover {
+  background: #f2f2f2;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+
+.search-cart {
+  display: flex;
+  align-items: center;
+}
+
+.search-cart input {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.search-cart button {
+  margin-left: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: crimson;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-cart a {
+  margin-left: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.search-cart .btn {
+  background: crimson;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* About Section */
+.about-section {
+  padding: 0;
+  background: #f9f9f9;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+  
+/* Full-width horizontal blue bar */
+.about-title {
+  background: rgb(230, 141, 58);   /* Blue bar */
+  color: black;          /* Black text */
+  width: 100%;           /* Full width bar */
+  padding: 15px 0;
+  font-size: 24px;
+  margin: 40px 0 20px 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Paragraph styling */
+.about-text {
+  font-size: 18px;             /* Adjusted font size */
+  font-family: 'Times New Roman', serif;  /* Adjusted font type */
+  margin: 20px auto 30px auto; /* Adjusted top & bottom margins */
+  max-width: 900px;
+  line-height: 1.8;
+  padding: 0 20px;
+}
+/* Dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Main button */
+.dropbtn {
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 12px;
+  display: inline-block;
+}
+
+/* Dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 180px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+/* Links inside dropdown */
+.dropdown-content a {
+  color: #333;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* Footer */
+.footer {
+  font-size: 16px;
+}
+
+/* Yellow Section */
+.footer-top {
+  background: #f9c32c;
+  color: black;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 40px 20px;
+}
+
+.footer-box {
+  width: 250px;
+  margin: 15px 0;
+}
+
+.footer-box h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.footer-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-box ul li {
+  margin-bottom: 8px;
+}
+
+.footer-box ul li a,
+.footer-box p a {
+  color: black;
+  text-decoration: none;
+}
+
+.footer-box p {
+  margin-bottom: 8px;
+}
+
+/* Black Copyright Bar */
+.footer-bottom {
+  background: #1a1a1a;
+  color: white;
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 20px;
+}
+

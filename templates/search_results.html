@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .header i {
+      font-size: 20px;
+    }
+
+    .results-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 40px 60px;
+    }
+
+    .book-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      width: 260px;
+      padding: 15px;
+      transition: 0.3s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ddd;
+    }
+
+    .book-card h3 {
+      font-size: 18px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .book-card p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .book-card strong {
+      color: #000;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #444;
+      margin-top: 80px;
+      font-size: 18px;
+    }
+
+    .back-home {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .back-home a {
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s;
+    }
+
+    .back-home a:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <i>🔍</i> Search Results for “{{ query|title }}”
+  </div>
+
+  {% if results and results|length > 0 %}
+  <div class="results-container">
+    {% for book in results %}
+      <div class="book-card">
+        <!-- ✅ Book Image -->
+        <img src="{{ url_for('static', filename=book.image_url) }}" alt="{{ book.title }}">
+
+        <!-- ✅ Book Details -->
+        <h3>{{ book.title }}</h3>
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Subject:</strong> {{ book.subject }}</p>
+        <p><strong>Edition:</strong> {{ book.edition }}</p>
+        <p><strong>Price:</strong> ₹{{ "%.2f"|format(book.price) }}</p>
+        <p><strong>Sales:</strong> {{ book.sales }}</p>
+        <p><strong>Rating:</strong>  {{ book.rating }}/5</p>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="no-results">No books found for your search.</p>
+  {% endif %}
+
+  <div class="back-home">
+    <a href="{{ url_for('home') }}">🏠 Back to Home</a>
+  </div>
+
+</body>
+</html>

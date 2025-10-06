@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encore Library | Feedback</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 40px 50px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    p {
+      text-align: center;
+      color: #555;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input[readonly] {
+      background-color: #f3f3f3;
+      color: #777;
+      cursor: not-allowed;
+    }
+
+    /* ⭐ Star Rating */
+    .rating-section {
+      text-align: center;
+      margin: 25px 0;
+    }
+
+    .rating-section h3 {
+      font-size: 18px;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .stars {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      margin: 10px 0 20px;
+    }
+
+    .stars input {
+      display: none;
+    }
+
+    .stars label {
+      font-size: 32px;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .stars input:checked ~ label {
+      color: gold;
+    }
+
+    .stars label:hover,
+    .stars label:hover ~ label {
+      color: gold;
+    }
+
+    /* 🧠 Question Section */
+    .question {
+      margin-top: 25px;
+    }
+
+    .question h4 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      font-size: 14px;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    /* 🟢 Submit Button */
+    #submitFeedback {
+      margin-top: 25px;
+      padding: 12px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    #submitFeedback:hover {
+      background-color: #218838;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      background: #f1f1f1;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  
+  <header>Encore Library Feedback 📚</header>
+
+  <main>
+    <h2>We Value Your Feedback</h2>
+    <p>Your insights help us improve our website and your reading experience!</p>
+
+    <form id="feedbackForm">
+      <!-- 🧾 Name -->
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Your full name" required>
+
+      <!-- 📧 Email -->
+      <label for="email">Email:</label>
+      <input type="email" id="email" readonly>
+
+      <!-- ⭐ Website Rating -->
+      <div class="rating-section">
+        <h3>⭐ How would you rate our website — Encore Library?</h3>
+        <div class="stars">
+          <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+        </div>
+      </div>
+
+      <!-- 🧠 Question 1 -->
+      <div class="question">
+        <h4>1. How would you rate the eBook content quality?</h4>
+        <div class="options">
+          <label><input type="radio" name="content" value="Outstanding" required> Outstanding</label>
+          <label><input type="radio" name="content" value="Excellent"> Excellent</label>
+          <label><input type="radio" name="content" value="Good"> Good</label>
+          <label><input type="radio" name="content" value="Average"> Average</label>
+          <label><input type="radio" name="content" value="Bad"> Bad</label>
+        </div>
+      </div>
+
+      <!-- 🧠 Question 2 -->
+      <div class="question">
+        <h4>2. How was the website’s design and readability?</h4>
+        <div class="options">
+          <label><input type="radio" name="ui" value="Outstanding" required> Outstanding</label>
+          <label><input type="radio" name="ui" value="Excellent"> Excellent</label>
+          <label><input type="radio" name="ui" value="Good"> Good</label>
+          <label><input type="radio" name="ui" value="Average"> Average</label>
+          <label><input type="radio" name="ui" value="Bad"> Bad</label>
+        </div>
+      </div>
+
+      <!-- 💡 Suggestions -->
+      <label for="feedbackText">Suggestions / Comments:</label>
+      <textarea id="feedbackText" placeholder="Share your suggestions..." rows="4" required></textarea>
+
+      <!-- Submit -->
+      <button type="submit" id="submitFeedback">Submit Feedback</button>
+    </form>
+  </main>
+
+  <footer>© 2025 Encore Library | All rights reserved.</footer>
+
+  <!-- Flask session email -->
+  <script id="session-data" type="application/json">
+    {{ session_email | tojson }}
+  </script>
+
+  <!-- ✅ JavaScript Logic -->
+  <script>
+    const form = document.getElementById("feedbackForm");
+    const emailInput = document.getElementById("email");
+
+    // Fetch email from Flask session
+    const sessionEmail = JSON.parse(
+      document.getElementById("session-data").textContent
+    );
+
+    // Auto-fill email or redirect if not logged in
+    if (sessionEmail) {
+      emailInput.value = sessionEmail;
+    } else {
+      alert("⚠️ Please login first to give feedback!");
+      window.location.href = "/login";
+    }
+
+    // Form submission
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = emailInput.value;
+      const rating = document.querySelector('input[name="rating"]:checked')?.value;
+      const content = document.querySelector('input[name="content"]:checked')?.value;
+      const ui = document.querySelector('input[name="ui"]:checked')?.value;
+      const feedback = document.getElementById("feedbackText").value.trim();
+
+      if (!name || !rating || !content || !ui || !feedback) {
+        alert("⚠️ Complete all the fields");
+        return;
+      }
+
+      // Optional: send to backend
+      console.log("📩 Feedback submitted:", { name, email, rating, content, ui, feedback });
+
+      alert("🎉 Thank you for your valuable feedback!");
+      window.location.href = "/home"; // redirect after success
+    });
+  </script>
+</body>
+</html>

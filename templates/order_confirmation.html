@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f9;
+  margin: 0;
+  padding: 30px 0;  /* spacing top/bottom */
+  display: block;   /* ✅ remove flex center */
+  overflow-y: auto; /* ✅ allow vertical scroll */
+}
+
+.confirmation-box {
+  background: #fff;
+  width: 700px;
+  border-radius: 10px;
+  overflow: hidden; /* ✅ flush heading bar */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  margin: 0 auto;   /* ✅ center horizontally */
+  position: relative;
+}
+
+/* ✅ Heading bar */
+.heading-bar {
+  background: #28a745; /* green */
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.heading-bar i {
+  margin-right: 10px;
+}
+
+.close-btn {
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff; /* white close button */
+}
+
+.order-details {
+  padding: 20px;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.detail-row strong {
+  width: 200px;
+  font-weight: bold;
+  color: #222;
+}
+
+.detail-row span {
+  flex: 1;
+  color: #444;
+}
+
+.no-orders {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="confirmation-box">
+    <!-- ✅ Green heading bar -->
+    <div class="heading-bar">
+      <div><i class="fas fa-check-circle"></i> Order Placed Successfully</div>
+      <button class="close-btn" onclick="window.location.href='/cart'">✖</button>
+    </div>
+
+    {% if orders %}
+      {% for order in orders %}
+        <div class="order-details">
+          <div class="detail-row"><strong>Order ID:</strong> <span>{{ order.order_id }}</span></div>
+          <div class="detail-row"><strong>Book ID:</strong> <span>{{ order.book_id }}</span></div>
+          <div class="detail-row"><strong>Book Name:</strong> <span>{{ order.title }}</span></div>
+          <div class="detail-row"><strong>Quantity:</strong> <span>{{ order.quantity }}</span></div> 
+          <div class="detail-row"><strong>Order Date:</strong> <span>{{ order.order_date }}</span></div>
+          <div class="detail-row"><strong>Shipping Date:</strong> <span>{{ order.shipping_date }}</span></div>
+          <div class="detail-row"><strong>Amount Paid:</strong> <span>₹{{ order.order_amount }}</span></div>
+          <div class="detail-row"><strong>Shipping Address:</strong> <span>{{ order.shipping_address }}</span></div>
+          <div class="detail-row"><strong>Payment Status:</strong> <span>{{ order.payment_status }}</span></div>
+          <div class="detail-row"><strong>Payment Mode:</strong> <span>{{ order.payment_mode }}</span></div>
+          <div class="detail-row"><strong>Order Status:</strong> <span>{{ order.order_status }}</span></div>
+        </div>
+        {% if not loop.last %}<hr>{% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="no-orders"><p>No recent orders found.</p></div>
+    {% endif %}
+  </div>
+</body>
+</html>

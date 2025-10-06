@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bookstore Theme Search</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+</head>
+<body>
+  <!-- Navigation Bar -->
+   <!-- Navigation Bar -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Encore Library</div>
+      <ul class="menu">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li class="dropdown">
+        <a href="#">Book Category ▼</a>
+        <ul class="dropdown-menu">
+           <li><a href="{{ url_for('computer') }}">Computer Engineering</a></li>
+            <li><a href="{{ url_for('electronics') }}">Electronics Engineering</a></li>
+            <li><a href="{{ url_for('mechanical') }}">Mechanical Engineering</a></li>
+            <li><a href="{{ url_for('it') }}">Information_Technology</a></li>
+            <li><a href="{{ url_for('civil') }}">Civil Engineering</a></li>
+            <li><a href="{{ url_for('aerospace') }}">Aerospace Engineering</a></li>
+            <li><a href="{{ url_for('chemical') }}">Chemical Engineering</a></li>
+            <li><a href="{{ url_for('automobile') }}">Automobile Engineering</a></li>
+            <li><a href="{{ url_for('biomedical') }}">Biomedical Engineering</a></li>
+
+        </ul>
+        </li>
+        
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('faqs') }}">FAQs</a></li>  
+        <li><a href="{{ url_for('feedback') }}">Feedback</a></li> 
+        
+      </ul>
+      <div class="search-cart">
+        <input type="text" id="searchInput" placeholder="Search book here" autocomplete="off">
+        <button id="searchBtn">🔍</button>
+        <ul id="suggestionsList" class="suggestions"></ul>
+        <div class="dropdown">
+          <a href="{{ url_for('profile') }}" class="dropbtn">My Account ▼</a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('profile') }}">My Profile</a>
+            <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('wishlist') }}">My Wishlist</a>
+            <a href="{{ url_for('orders') }}">My Orders</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}">Sign Out</a>
+          </div>
+        </div>
+        <a href="{{ url_for('cart') }}">My Cart</a>
+      </div>
+    </div>
+  </header>
+  <h1 class="center-heading">Electronics Engineering</h1>
+
+  <form method="POST" action="{{ url_for('electronics') }}">
+    <!-- Search bar -->
+    <div class="search-bar">
+      <input type="text" name="author" placeholder="Search by author" value="{{ request.form.get('author', '') }}">
+      <input type="text" name="search" placeholder="Search books..." value="{{ request.form.get('search', '') }}">
+      <button type="submit">Search</button>
+    </div>
+
+    <div class="container">
+      <!-- Sidebar Filter -->
+      <aside class="sidebar">
+        <h3>Filter & Refine</h3>
+
+        <div class="filter-section">
+          <h4>Subject</h4>
+          <select name="subject">
+            <option value="All" {% if request.form.get('subject') == 'All' %}selected{% endif %}>All Subjects</option>
+            <option value="Analog Electronics" {% if request.form.get('subject') == 'Analog Electronics' %}selected{% endif %}>Analog Electronics</option>
+            <option value="Digital Electronics" {% if request.form.get('subject') == 'Digital Electronics' %}selected{% endif %}>Digital Electronics</option>
+            <option value="Microprocessors and Microcontrollers" {% if request.form.get('subject') == 'Microprocessors and Microcontrollers' %}selected{% endif %}>Microprocessors and Microcontrollers</option>
+            <option value="Signals and Systems" {% if request.form.get('subject') == 'Signals and Systems' %}selected{% endif %}>Signals and Systems</option>
+            <option value="Control Systems" {% if request.form.get('subject') == 'Control Systems' %}selected{% endif %}>Control Systems</option>
+            <option value="Communication Systems" {% if request.form.get('subject') == 'Communication Systems' %}selected{% endif %}>Communication Systems</option>
+            <option value="Electronic Measurements & Instrumentation" {% if request.form.get('subject') == 'Electronic Measurements & Instrumentation' %}selected{% endif %}>Electronic Measurements & Instrumentation</option>
+        </select>
+
+        </div>
+
+        <div class="filter-section">
+          <h4>Price (₹)</h4>
+          <input type="number" name="price_min" value="{{ request.form.get('price_min', 0) }}" />
+          <span>—</span>
+          <input type="number" name="price_max" value="{{ request.form.get('price_max', 1000) }}" />
+        </div>
+
+        <div class="filter-section">
+          <h4>Sales</h4>
+          <label><input type="checkbox" name="sales" value="low"
+            {% if 'low' in request.form.getlist('sales') %}checked{% endif %}> Low</label><br>
+          <label><input type="checkbox" name="sales" value="medium"
+            {% if 'medium' in request.form.getlist('sales') %}checked{% endif %}> Medium</label><br>
+          <label><input type="checkbox" name="sales" value="high"
+            {% if 'high' in request.form.getlist('sales') %}checked{% endif %}> High</label>
+        </div>
+
+        <div class="filter-section">
+          <h4>Rating</h4>
+          {% for i in range(1, 6) %}
+          <label>
+            <input type="radio" name="rating" value="{{ i }}"
+              {% if request.form.get('rating') == i|string %}checked{% endif %}>
+            {% for j in range(i) %}⭐{% endfor %}
+          </label><br>
+          {% endfor %}
+        </div>
+
+        <button type="submit" name="action" value="apply_filters">Apply Filters</button>
+
+      </aside>
+    </form>
+
+    <!-- Main Content Area -->
+    <main class="results">
+      {% if books %}
+        {% for book in books %}
+        <div class="theme-card">
+          <!-- Theme Image -->
+          <img src="{{ url_for('static', filename=book.image_url) }}" alt="{{ book.title }}" width="200" height="250">
+
+          <!-- Book Info + Price/Edition/Rating -->
+          <div class="theme-info">
+            <h3>{{ book.title }}</h3>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Subject:</strong> {{ book.subject }}</p>
+
+            <div class="price-rating">
+              <p class="price">₹{{ book.price }}</p>
+              <p><strong>Edition:</strong> {{ book.edition }}</p>
+              <p>{% for i in range(book.rating) %} ⭐ {% endfor %}</p>
+              <p>Sales: {{ book.sales }}</p>
+            </div>
+          </div>
+
+          <!-- Actions Block (EXTREME RIGHT) -->
+          <div class="actions">
+            <a href="{{ url_for('book_details', category='electronics', book_id=book.book_id) }}" class="preview-btn">
+              <i class="fas fa-info-circle"></i> View Details
+            </a>
+            <form class="add-to-cart-form">
+              <input type="hidden" name="book_id" value="{{ book.book_id }}">
+              <button type="button" class="cart-btn">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </button>
+            </form>
+
+            <!-- Cart Alert Window -->
+            <div id="cartAlert" class="cart-alert">
+              <div class="alert-header">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Add to Cart</span>
+              </div>
+              <div class="alert-body">
+                <div id="alertIcon" class="circle">
+                  <i class="fas"></i>
+                </div>
+                <p id="cartAlertMessage"></p>
+                <button id="cartAlertOk">OK</button>
+              </div>
+            </div>
+            
+            <!-- Wishlist Button Form -->
+            <form class="add-to-wishlist-form">
+              <input type="hidden" name="book_id" value="{{ book.book_id }}">
+              <button type="button" class="wishlist-btn">
+                <i class="fas fa-clock"></i> Wishlist
+              </button>
+            </form>
+
+            <!-- ✅ Wishlist Alert Window -->
+            <div id="wishlistAlertBox" class="wishlist-alert-overlay">
+              <div class="wishlist-alert-content">
+                <div class="wishlist-alert-header">
+                  <i class="fas fa-clock"></i>
+                  <span>Wishlist</span>
+                </div>
+                <div class="wishlist-alert-body">
+                  <div id="wishlistAlertCircle" class="wishlist-circle">
+                    <i class="fas"></i>
+                  </div>
+                  <p id="wishlistAlertText"></p>
+                  <button id="wishlistAlertButton">OK</button>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-results">No books found matching your filters or searches.</p>
+      {% endif %}
+    </main>
+  </div>
+
+  <!-- Footer Section -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-box">
+      <h3>Engineering Book Store</h3>
+      <p>Engineering Book store is an online web application where the customer can purchase engineering books online. Through a web browser the customers can search for a book by its title or author, later can add to the shopping cart and finally purchase using credit card transaction.</p>
+    </div>
+    <div class="footer-box">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#">Book Category</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Terms and Conditions</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-box">
+      <h3>Contact Details</h3>
+      <p>📍 New Panvel, Maharashtra, India</p>
+      <p>📞 +92 3092367312</p>
+      <p>✉️ onlinebookstore@gmail.com</p>
+    </div>
+    <div class="footer-box">
+      <h3>Follow Us</h3>
+      <p><a href="#">📘 facebook.com/Online_Book_Store</a></p>
+      <p><a href="#">📸 instagram.com/onlinebookstore</a></p>
+      <p><a href="#">🐦 twitter.com/online_Book_Store</a></p>
+      <p><a href="#">▶️ youtube.com/OnlineBookStore</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="copyright">© CopyRight 2025 Online Book Store. All Right Reserved</p>
+  </div>
+</footer>
+
+  
+  <script>
+    document.querySelectorAll('input[name="rating"]').forEach(radio => {
+      radio.addEventListener('click', function(e) {
+        // If already checked, uncheck it
+        if (this.wasChecked) {
+          this.checked = false;
+          this.wasChecked = false;
+        } else {
+          // Mark all radios as not previously checked
+          document.querySelectorAll('input[name="rating"]').forEach(r => r.wasChecked = false);
+          this.wasChecked = true;
+        }
+      });
+    });
+        
+    function showCartAlert(message, type = "success") {
+      const alertBox = document.getElementById("cartAlert");
+      const alertMsg = document.getElementById("cartAlertMessage");
+      const okBtn = document.getElementById("cartAlertOk");
+      const alertIcon = document.getElementById("alertIcon");
+
+      // Reset icon
+      alertIcon.className = "circle";
+      alertIcon.style.opacity = 0;
+      alertIcon.style.transform = "scale(0)";
+      alertIcon.querySelector("i").className = "fas";
+
+      // Set message
+      alertMsg.textContent = message;
+
+      // Choose icon based on type
+      if (type === "success") {
+        alertIcon.classList.add("success");
+        alertIcon.querySelector("i").classList.add("fa-check");
+      } else {
+        alertIcon.classList.add("warning");
+        alertIcon.querySelector("i").classList.add("fa-exclamation");
+      }
+
+      // Animate icon
+      alertIcon.style.animation = "popIn 1s forwards";
+
+      // Show modal
+      alertBox.style.display = "block";
+
+      // Auto close after 3s
+      const timer = setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 2500);
+
+      // Close on OK click
+      okBtn.onclick = () => {
+        alertBox.style.display = "none";
+        clearTimeout(timer);
+      };
+    }
+
+    // ✅ Hook into Add-to-Cart
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+      const button = form.querySelector(".cart-btn");
+
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const bookId = form.querySelector('input[name="book_id"]').value;
+
+        const response = await fetch("/add_to_cart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ book_id: bookId })
+        });
+
+        const data = await response.json();
+
+        if (data.message.includes("already")) {
+          showCartAlert(data.message, "warning"); // ⚠ already in cart
+        } else {
+          showCartAlert(data.message, "success"); // ✔ added successfully
+        }
+      });
+    });
+
+    function showWishlistAlert(message, type = "success") {
+      const alertBox = document.getElementById("wishlistAlertBox");
+      const alertMsg = document.getElementById("wishlistAlertText");
+      const okBtn = document.getElementById("wishlistAlertButton");
+      const alertIcon = document.getElementById("wishlistAlertCircle");
+
+      // Reset the icon and state
+      alertIcon.className = "wishlist-circle";
+      alertIcon.querySelector("i").className = "fas";
+
+      // Set message text
+      alertMsg.textContent = message;
+
+      // Choose icon style
+      if (type === "success") {
+        alertIcon.classList.add("wishlist-success");
+        alertIcon.querySelector("i").classList.add("fa-check");
+      } else {
+        alertIcon.classList.add("wishlist-warning");
+        alertIcon.querySelector("i").classList.add("fa-exclamation");
+      }
+
+      // Show alert box
+      alertBox.style.display = "flex";
+      alertBox.style.opacity = "1";
+      alertBox.style.transition = "opacity 0.5s ease";
+
+      // ✅ Automatically close after 2 seconds
+      const timer = setTimeout(() => {
+        fadeOutWishlistAlert();
+      }, 2000);
+
+      // ✅ Manual close on OK button click
+      okBtn.onclick = () => {
+        clearTimeout(timer);
+        fadeOutWishlistAlert();
+      };
+    }
+
+    // ✅ Smooth fade-out helper function
+    function fadeOutWishlistAlert() {
+      const alertBox = document.getElementById("wishlistAlertBox");
+      alertBox.style.opacity = "0";
+      setTimeout(() => {
+        alertBox.style.display = "none";
+      }, 500); // wait for fade-out animation
+    }
+
+    // ✅ Hook into Wishlist buttons
+    document.querySelectorAll('.add-to-wishlist-form').forEach(form => {
+      const button = form.querySelector(".wishlist-btn");
+
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const bookId = form.querySelector('input[name="book_id"]').value;
+
+        const response = await fetch("/add_to_wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ book_id: bookId })
+        });
+
+        const data = await response.json();
+
+        if (data.message.includes("already")) {
+          showWishlistAlert(data.message, "warning");
+        } else {
+          showWishlistAlert(data.message, "success");
+        }
+      });
+    });
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const suggestionsList = document.getElementById("suggestionsList");
+
+// 🔍 Fetch suggestions dynamically
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+
+  // Hide if too short
+  if (query.length < 2) {
+    suggestionsList.style.display = "none";
+    return;
+  }
+
+  try {
+    // ✅ Fetch from Flask JSON route
+    const res = await fetch(`/search_suggestions?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    // Clear old suggestions
+    suggestionsList.innerHTML = "";
+
+    if (data.length > 0) {
+      data.forEach(book => {
+        const li = document.createElement("li");
+        li.textContent = book;
+
+        // ✅ When user clicks a suggestion
+        li.addEventListener("click", () => {
+          searchInput.value = book;
+          suggestionsList.style.display = "none";
+
+          // Redirect to Flask route to render HTML
+          window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+        });
+
+        suggestionsList.appendChild(li);
+      });
+
+      suggestionsList.style.display = "block";
+    } else {
+      suggestionsList.style.display = "none";
+    }
+
+  } catch (error) {
+    console.error("⚠️ Error fetching suggestions:", error);
+    suggestionsList.style.display = "none";
+  }
+});
+
+// ✅ Clicking search button
+searchBtn.addEventListener("click", () => {
+  const book = searchInput.value.trim();
+  if (book) {
+    // Redirect to results page mode
+    window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+  } else {
+    alert("Please enter a book name to search!");
+  }
+});
+
+// ✅ Pressing Enter key
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const book = searchInput.value.trim();
+    if (book) {
+      window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+    } else {
+      alert("Please enter a book name to search!");
+    }
+  }
+});
+
+// ✅ Hide dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-cart")) {
+    suggestionsList.style.display = "none";
+  }
+});
+  </script>
+
+  <!-- Add Font Awesome (for icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>

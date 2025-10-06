@@ -1,0 +1,492 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar */
+/* Navbar basics */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+}
+
+.menu li:hover {
+  background: #444;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background: #444;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 220px;
+  z-index: 10;
+}
+
+.dropdown-menu li a {
+  padding: 10px;
+  display: block;
+  color: white;
+}
+
+.dropdown-menu li a:hover {
+  background: #555;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+
+.search-cart {
+  position: relative; /* Enables absolute positioning inside */
+  display: flex;
+  align-items: center;
+}
+
+.search-cart input {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.search-cart button {
+  margin-left: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: crimson;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-cart a {
+  margin-left: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.search-cart .btn {
+  background: crimson;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Banner */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.4);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.banner-text h1 {
+  font-size: 40px;
+}
+
+.banner-text p {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* Features */
+.features {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 30px;
+  background: #1a1a1a;
+  color: white;
+}
+
+.feature {
+  text-align: center;
+}
+
+.feature img {
+  width: 50px;
+  margin-bottom: 10px;
+}
+.latest-books {
+  padding: 50px 30px;
+  text-align: center;
+  background: #f8f8f8;
+}
+
+.latest-books h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.book-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.book-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 200px;
+  padding: 15px;
+  text-align: center;
+  transition: 0.3s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.book-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.book-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.book-card h3 {
+  margin: 12px 0 5px;
+  font-size: 18px;
+}
+
+.book-card .author {
+  font-size: 14px;
+  color: #555;
+}
+
+.book-card .price {
+  font-size: 15px;
+  color: #333;
+  margin: 8px 0;
+  font-weight: bold;
+}
+
+.add-cart {
+  background: crimson;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.add-cart:hover {
+  background: darkred;
+}
+
+.book-categories {
+  padding: 80px 80px; /* adds margin from left and right */
+  background: #f9f9f9;
+  font: Times New Roman, sans-serif;
+}
+.book-categories h2 {
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.categories-heading {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* Decorative underline under heading */
+.categories-heading::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #007bff;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+/* Horizontal scroll */
+.categories-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  padding: 10px 0 20px;
+}
+
+/* Scrollbar styling */
+.categories-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.categories-scroll-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.categories-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Cards inside scrolling area */
+.categories-container {
+  display: inline-flex;
+  gap: 25px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.category-card {
+  flex: 0 0 auto;
+  width: 220px;
+  background: white;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.category-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+
+.category-card h3 {
+  font-size: 16px;
+  color: #007bff;
+  padding: 10px 0;
+}
+/* Stats Section */
+.stats-section {
+  background: #1a1a1a;
+  color: white;
+  display: flex;
+  justify-content: space-between; /* Spread across left, center, right */
+  padding: 60px 80px; /* Increase spacing */
+  text-align: center;
+  align-items: center;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-box p {
+  font-size: 24px; /* Bigger text for labels */
+  margin-bottom: 15px;
+}
+
+.stat-box img {
+  width: 50px; /* Bigger icons */
+  margin-bottom: 15px;
+}
+
+.stat-box h4 {
+  font-size: 32px; /* Bigger numbers */
+  font-weight: bold;
+  margin: 0;
+}
+/* Dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Main button */
+.dropbtn {
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 12px;
+  display: inline-block;
+}
+
+/* Dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 180px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+/* Links inside dropdown */
+.dropdown-content a {
+  color: #333;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Footer */
+.footer {
+  font-size: 16px;
+}
+
+/* Yellow Section */
+.footer-top {
+  background: #f9c32c;
+  color: black;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 40px 20px;
+}
+
+.footer-box {
+  width: 250px;
+  margin: 15px 0;
+}
+
+.footer-box h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.footer-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-box ul li {
+  margin-bottom: 8px;
+}
+
+.footer-box ul li a,
+.footer-box p a {
+  color: black;
+  text-decoration: none;
+}
+
+.footer-box p {
+  margin-bottom: 8px;
+}
+
+/* Black Copyright Bar */
+.footer-bottom {
+  background: rgba(26, 26, 26, 1);
+  color: white;
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 20px;
+}
+/* ✅ Style the search input */
+#searchInput {
+  position: relative;
+  z-index: 10;
+}
+/* 📚 Search Suggestions Dropdown */
+.suggestions {
+  position: absolute;
+  top: 42px; /* Adjust to sit right below the input box */
+  left: 0;
+  width: 240px; /* match your input width */
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 9999; /* ensure above other elements */
+  display: none;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Suggestion item */
+.suggestions li {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.suggestions li:hover {
+  background: #f2f2f2;
+}

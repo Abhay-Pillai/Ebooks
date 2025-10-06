@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ book.title }} - Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='book_details.css') }}" />
+</head>
+<body>
+
+  <header class="book-header">
+    <a href="javascript:history.back()" class="back-link">⬅ Back</a>
+    <h1 class="book-title">{{ book.title }}</h1>
+  </header>
+
+  <main class="book-detail">
+    <div class="book-image-container">
+      <img src="{{ url_for('static', filename=book.image_url) }}" alt="{{ book.title }}" class="book-image" />
+    </div>
+
+    <div class="book-info">
+      <p><strong>Book ID:</strong> {{ book.book_id }}</p>
+      <p><strong>Author:</strong> {{ book.author }}</p>
+      <p><strong>Edition:</strong> {{ book.edition }}</p>
+      <p><strong>Price:</strong> ₹{{ book.price }}</p>
+      <p><strong>Rating:</strong>{% for i in range(book.rating|default(0)|int) %}⭐{% endfor %}</p>
+      <p><strong>Sales:</strong> {{ book.sales }}</p>
+      <p><strong>Description:</strong> {{ book.description }}</p>
+
+    </div>
+  </main>
+
+</body>
+</html>

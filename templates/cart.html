@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    /* ✅ Diwali Offer Popup */
+    .offer-popup, .confirm-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .offer-content, .confirm-content {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      width: 350px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .offer-content img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .offer-content h2 {
+      color: #e67e22;
+      margin: 15px 0 10px;
+    }
+
+    .offer-content p {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .offer-content button, .confirm-content button {
+      background: #2563eb;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ✅ Confirm Discount Popup */
+    .confirm-content h2 {
+      color: #16a34a;
+      margin-bottom: 10px;
+    }
+    /* ✅ Make close button visible above image */
+    #closeOfferBtn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      color: white;              /* visible on red image */
+      text-shadow: 0 0 4px black; /* adds visibility */
+      cursor: pointer;
+      z-index: 9999;             /* ensures it's above the image */
+    }
+    .close-offer-btn:hover {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+  <header>
+    <div class="navbar">
+      <div class="logo">Encore Library</div>
+      <ul class="menu">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li class="dropdown">
+        <a href="#">Book Category ▼</a>
+        <ul class="dropdown-menu">
+           <li><a href="{{ url_for('computer') }}">Computer Engineering</a></li>
+            <li><a href="{{ url_for('electronics') }}">Electronics Engineering</a></li>
+            <li><a href="{{ url_for('mechanical') }}">Mechanical Engineering</a></li>
+            <li><a href="{{ url_for('it') }}">Information_Technology</a></li>
+            <li><a href="{{ url_for('civil') }}">Civil Engineering</a></li>
+            <li><a href="{{ url_for('aerospace') }}">Aerospace Engineering</a></li>
+            <li><a href="{{ url_for('chemical') }}">Chemical Engineering</a></li>
+            <li><a href="{{ url_for('automobile') }}">Automobile Engineering</a></li>
+            <li><a href="{{ url_for('biomedical') }}">Biomedical Engineering</a></li>
+
+        </ul>
+        </li>
+        
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('faqs') }}">FAQs</a></li>  
+        <li><a href="{{ url_for('feedback') }}">Feedback</a></li> 
+        
+      </ul>
+      <div class="search-cart">
+        <input type="text" id="searchInput" placeholder="Search book here" autocomplete="off">
+        <button id="searchBtn2">🔍</button>
+        <ul id="suggestionsList" class="suggestions"></ul>
+        <div class="dropdown">
+          <a href="{{ url_for('profile') }}" class="dropbtn">My Account ▼</a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('profile') }}">My Profile</a>
+            <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('wishlist') }}">My Wishlist</a>
+            <a href="{{ url_for('orders') }}">My Orders</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}">Sign Out</a>
+          </div>
+        </div>
+        <a href="{{ url_for('cart') }}">My Cart</a>
+      </div>
+    </div>
+  </header>
+
+    <!-- ✅ Diwali Offer Popup -->
+    <div id="offerPopup" class="offer-popup">
+      <div class="offer-content">
+        <!-- ❌ Close Button -->
+        <span id="closeOfferBtn">&times;</span> 
+
+        <!-- Offer Image -->
+        <img src="{{ url_for('static', filename='books/diwali_offer.jpg') }}" alt="Diwali Offer">
+
+        <h2>🎉 Diwali Special Offer! 🎉</h2>
+        <p>Get <strong>30% OFF</strong> on all your cart items.<br>Offer valid for a limited time only!</p>
+
+        <button id="claimOfferBtn">Claim 30% Discount</button>
+      </div>
+    </div>
+
+    <!-- ✅ Confirmation Popup before Payment -->
+    <div id="confirmPopup" class="confirm-popup">
+      <div class="confirm-content">
+        <h2>🎊 Discount Applied!</h2>
+        <p id="confirmMessage">Total after 30% discount: ₹0.00</p>
+        <button id="confirmOkBtn">OK</button>
+      </div>
+    </div>
+
+    <!-- ✅ Cart Section -->
+    <section class="main-section">
+      <div class="heading-bar">
+        <h1><i class="fas fa-cart-shopping"></i> My Cart</h1>
+      </div>
+
+      <div class="actions-bar">
+        <input type="search" id="search" placeholder="Search books in cart..." />
+        <button id="searchBtn">Search</button>
+        <button id="showAllBtn">Show All</button>
+      </div>
+
+      <table id="cartTable" aria-label="Shopping Cart Table">
+        <thead>
+          <tr>
+            <th>Book ID</th>
+            <th>Image</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Subject</th>
+            <th>Price (₹)</th>
+            <th>Quantity</th>
+            <th>Total (₹)</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+            <td>{{ item.book_id }}</td>
+            <td><img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.title }}" width="60"></td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.author }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.subject }}</td>
+            <td class="price-cell">{{ item.price }}</td>
+            <td><input type="number" class="qty-input" value="{{ item.quantity }}" min="1"></td>
+            <td class="total-cell">0.00</td>
+            <td><button class="delete-btn"><i class="fas fa-trash"></i></button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ✅ Summary Section -->
+    <section class="summary-section" aria-label="Cart Summary">
+      <h2>Cart Summary</h2>
+      <div class="summary-details">
+        <div><span>Total Items:</span><span id="totalItems">0</span></div>
+        <div><span>Shipping Cost:</span><span id="shippingCost">₹100.00</span></div>
+        <div><span>Total Cost:</span><span id="totalCost">₹0.00</span></div>
+      </div>
+      <button class="continue-btn" id="payBtn">Continue to Payment</button>
+    </section>
+
+    <!-- ✅ Payment Mode Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2 class="modal-title">Mode Of Payment</h2>
+        <div class="payment-options">
+          <button id="cashPayment" class="payment-btn">
+            <i class="fas fa-money-bill-wave"></i> Cash Payment
+          </button>
+          <button id="onlinePayment" class="payment-btn">
+            <i class="fas fa-credit-card"></i> Online Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const cartTable = document.getElementById('cartTable').querySelector('tbody');
+  const totalItemsEl = document.getElementById('totalItems');
+  const shippingCostEl = document.getElementById('shippingCost');
+  const totalCostEl = document.getElementById('totalCost');
+  const searchInput = document.getElementById('search');
+  const searchBtn = document.getElementById('searchBtn');
+  const showAllBtn = document.getElementById('showAllBtn');
+
+  const payBtn = document.getElementById("payBtn");
+  const paymentModal = document.getElementById("paymentModal");
+  const closeModal = document.getElementById("closeModal");
+  const cashPaymentBtn = document.getElementById("cashPayment");
+  const onlinePaymentBtn = document.getElementById("onlinePayment");
+
+  // ✅ Offer Popups
+  const offerPopup = document.getElementById("offerPopup");
+  const claimOfferBtn = document.getElementById("claimOfferBtn");
+  const closeOfferBtn = document.getElementById("closeOfferBtn");
+
+  const confirmPopup = document.getElementById("confirmPopup");
+  const confirmMessage = document.getElementById("confirmMessage");
+  const confirmOkBtn = document.getElementById("confirmOkBtn");
+
+  const SHIPPING_COST = 100;
+  let discountApplied = false; // Track if 30% discount claimed
+  let discountedTotal = 0;
+
+  /* ✅ Step 1: Show Diwali Offer popup when page loads */
+  window.addEventListener("load", () => {
+    offerPopup.style.display = "flex";
+  });
+
+  /* ✅ Step 2: When user clicks "Claim 30% Discount" */
+  claimOfferBtn.addEventListener("click", () => {
+    discountApplied = true;
+    offerPopup.style.display = "none";
+    alert("🎉 30% Diwali Discount Applied!");
+    updateTotals(); // Apply new discount in total
+  });
+
+  /* ✅ Step 3: When user clicks "×" (close) → no discount */
+  closeOfferBtn.addEventListener("click", () => {
+    offerPopup.style.display = "none";
+    discountApplied = false;
+    alert("Offer dismissed. No discount applied.");
+    updateTotals(); // recalc totals without discount
+  });
+
+  /* ✅ Step 4: Calculate totals (with or without discount) */
+  function updateTotals() {
+    let totalItems = 0;
+    let totalPrice = 0;
+
+    [...cartTable.rows].forEach(row => {
+      const qtyInput = row.querySelector('.qty-input');
+      const priceCell = row.cells[6];
+      const totalCell = row.querySelector('.total-cell');
+
+      let qty = parseInt(qtyInput.value) || 1;
+      const price = parseFloat(priceCell.textContent) || 0;
+      const total = qty * price;
+      totalCell.textContent = total.toFixed(2);
+
+      totalItems += qty;
+      totalPrice += total;
+    });
+
+    // ✅ Apply 30% discount only if claimed
+    if (discountApplied) totalPrice *= 0.7;
+
+    totalItemsEl.textContent = totalItems;
+    shippingCostEl.textContent = `₹${SHIPPING_COST.toFixed(2)}`;
+    const grandTotal = totalPrice + SHIPPING_COST;
+    totalCostEl.textContent = `₹${grandTotal.toFixed(2)}`;
+    discountedTotal = grandTotal; // Store for later
+  }
+
+  updateTotals();
+
+  cartTable.addEventListener('input', e => {
+    if (e.target.classList.contains('qty-input')) {
+      if (e.target.value < 1) e.target.value = 1;
+      updateTotals();
+    }
+  });
+  
+        cartTable.addEventListener('click', async (e) => {
+        if (e.target.closest('.delete-btn')) {
+          const row = e.target.closest('tr');
+          const bookId = row.cells[0].textContent.trim(); // Book ID column
+
+          // Call backend to delete
+          const response = await fetch("/delete_from_cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ book_id: bookId })
+          });
+
+          const data = await response.json();
+          alert(data.message);
+
+          if (data.success) {
+            row.remove();  // remove row from UI
+            updateTotals(); // recalc totals
+          }
+        }
+      });
+
+      function filterRows(term) {
+        [...cartTable.rows].forEach(row => {
+          const title = row.cells[2].textContent.toLowerCase(); // Title column
+          row.style.display = title.includes(term) ? '' : 'none';
+        });
+      }
+
+      searchBtn.addEventListener('click', () => {
+        const term = searchInput.value.toLowerCase();
+        filterRows(term);
+      });
+
+      showAllBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        [...cartTable.rows].forEach(row => row.style.display = '');
+      });
+
+  /* ✅ Step 5: On "Continue to Payment" */
+  payBtn.addEventListener("click", () => {
+    if (discountApplied) {
+      // 🎁 Discount applied → show confirmation popup first
+      confirmMessage.textContent = `Total after 30% discount: ₹${discountedTotal.toFixed(2)}`;
+      confirmPopup.style.display = "flex";
+    } else {
+      // ❌ No discount → directly open payment modal
+      paymentModal.style.display = "flex";
+      requestAnimationFrame(() => paymentModal.classList.add("show"));
+    }
+  });
+
+  /* ✅ Step 6: After confirmation OK, show payment modal */
+  confirmOkBtn.addEventListener("click", () => {
+    confirmPopup.style.display = "none";
+    paymentModal.style.display = "flex";
+    requestAnimationFrame(() => paymentModal.classList.add("show"));
+  });
+
+  /* ✅ Step 7: Close Payment Modal */
+  closeModal.addEventListener("click", () => {
+    paymentModal.classList.remove("show");
+    setTimeout(() => {
+      paymentModal.style.display = "none";
+    }, 300);
+  });
+
+  /* ✅ Step 8: Cash Payment */
+  cashPaymentBtn.addEventListener("click", async () => {
+    const cartItems = [];
+    [...cartTable.rows].forEach(row => {
+      cartItems.push({
+        book_id: row.cells[0].textContent.trim(),
+        title: row.cells[2].textContent.trim(),
+        price: parseFloat(row.cells[6].textContent.trim()),
+        quantity: parseInt(row.querySelector(".qty-input").value)
+      });
+    });
+
+    const response = await fetch("/place_order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cart_items: cartItems, payment_mode: "Cash", discounted_total: discountedTotal })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      alert("✅ Order placed with Cash Payment.");
+      window.location.href = "/order_confirmation";
+    } else {
+      alert("❌ Error placing order: " + data.message);
+    }
+  });
+
+  /* ✅ Step 9: Online Payment (Razorpay) */
+  onlinePaymentBtn.addEventListener("click", async () => {
+    let cartItems = [];
+    [...cartTable.rows].forEach(row => {
+      const bookId = row.cells[0].textContent.trim();
+      const title = row.cells[2].textContent.trim();
+      const price = parseFloat(row.cells[6].textContent.trim());
+      const qty = parseInt(row.querySelector(".qty-input").value);
+      cartItems.push({ book_id: bookId, title, price, quantity: qty });
+    });
+
+    if (cartItems.length === 0) {
+      alert("❌ Your cart is empty.");
+      paymentModal.style.display = "none";
+      return;
+    }
+
+    const grandTotal = discountedTotal;
+
+    const res = await fetch("/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: grandTotal })
+    });
+    const order = await res.json();
+
+    const options = {
+      key: "rzp_test_RPHAIPIzWjYcBl",
+      amount: order.amount,
+      currency: order.currency,
+      name: "Encore Library",
+      description: "E-Book Purchase",
+      order_id: order.id,
+      handler: async function (response) {
+        const verify = await fetch("/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(response)
+        });
+
+        const result = await verify.json();
+        if (result.ok) {
+          const orderRes = await fetch("/place_order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart_items: cartItems, payment_mode: "Online", discounted_total: discountedTotal })
+          });
+          const orderData = await orderRes.json();
+
+          if (orderData.success) {
+            alert("✅ Payment & Order Placed Successfully!");
+            window.location.href = "/order_confirmation";
+          } else {
+            alert("⚠️ Payment success but order placement failed: " + orderData.message);
+          }
+        } else {
+          alert("❌ Payment verification failed: " + result.message);
+        }
+      },
+      theme: { color: "#2563eb" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+</script>
+</body>
+</html>

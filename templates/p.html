@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='cart.css') }}" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+  <div class="container">
+
+    <section class="main-section">
+      <div class="heading-bar">
+        <h1><i class="fas fa-cart-shopping"></i> My Cart</h1>
+      </div>
+
+      <div class="actions-bar">
+        <input type="search" id="search" placeholder="Search books in cart..." />
+        <button id="searchBtn">Search</button>
+        <button id="showAllBtn">Show All</button>
+      </div>
+
+      <table id="cartTable" aria-label="Shopping Cart Table">
+          <thead>
+            <tr>
+              <th>Book ID</th>
+              <th>Image</th>
+              <th>Book Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Subject</th>
+              <th>Price (₹)</th>
+              <th>Quantity</th>
+              <th>Total (₹)</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+        <tbody>
+          {% for item in cart_items %}
+              <tr>
+                <td>{{ item.book_id }}</td>
+                <td><img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.title }}" width="60"></td>
+                <td>{{ item.title }}</td>
+                <td>{{ item.author }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.subject }}</td>
+                <td class="price-cell">{{ item.price }}</td>
+                <td><input type="number" class="qty-input" value="{{ item.quantity }}" min="1"></td>
+                <td class="total-cell">0.00</td>
+                <td><button class="delete-btn"><i class="fas fa-trash"></i></button></td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="summary-section" aria-label="Cart Summary">
+      <h2>Cart Summary</h2>
+      <div class="summary-details">
+        <div><span>Total Items:</span><span id="totalItems">0</span></div>
+        <div><span>Shipping Cost:</span><span id="shippingCost">₹100.00</span></div>
+        <div><span>Total Cost:</span><span id="totalCost">₹0.00</span></div>
+      </div>
+      <button class="continue-btn" id="payBtn">Continue to Payment</button>
+    </section>
+
+    <!-- Payment Mode Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2 class="modal-title">Mode Of Payment</h2>
+        <div class="payment-options">
+          <button id="cashPayment" class="payment-btn">
+            <i class="fas fa-money-bill-wave"></i> Cash Payment
+          </button>
+          <button id="onlinePayment" class="payment-btn">
+            <i class="fas fa-credit-card"></i> Online Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      const cartTable = document.getElementById('cartTable').querySelector('tbody');
+      const totalItemsEl = document.getElementById('totalItems');
+      const shippingCostEl = document.getElementById('shippingCost');
+      const totalCostEl = document.getElementById('totalCost');
+      const searchInput = document.getElementById('search');
+      const searchBtn = document.getElementById('searchBtn');
+      const showAllBtn = document.getElementById('showAllBtn');
+
+      const SHIPPING_COST = 100;
+
+      function updateTotals() {
+        let totalItems = 0;
+        let totalPrice = 0;
+
+        [...cartTable.rows].forEach(row => {
+          const qtyInput = row.querySelector('.qty-input');
+          const priceCell = row.cells[6]; // Price column index
+          const totalCell = row.querySelector('.total-cell');
+
+          let qty = parseInt(qtyInput.value) || 1;
+          const price = parseFloat(priceCell.textContent) || 0;
+
+          const total = qty * price;
+          totalCell.textContent = total.toFixed(2);
+
+          totalItems += qty;
+          totalPrice += total;
+        });
+
+        totalItemsEl.textContent = totalItems;
+        shippingCostEl.textContent = `₹${SHIPPING_COST.toFixed(2)}`;
+        const grandTotal = totalPrice + SHIPPING_COST;
+        totalCostEl.textContent = `₹${grandTotal.toFixed(2)}`;
+      }
+
+      updateTotals();
+
+      cartTable.addEventListener('input', e => {
+        if (e.target.classList.contains('qty-input')) {
+          if (e.target.value < 1) e.target.value = 1;
+          updateTotals();
+        }
+      });
+
+      cartTable.addEventListener('click', async (e) => {
+        if (e.target.closest('.delete-btn')) {
+          const row = e.target.closest('tr');
+          const bookId = row.cells[0].textContent.trim(); // Book ID column
+
+          // Call backend to delete
+          const response = await fetch("/delete_from_cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ book_id: bookId })
+          });
+
+          const data = await response.json();
+          alert(data.message);
+
+          if (data.success) {
+            row.remove();  // remove row from UI
+            updateTotals(); // recalc totals
+          }
+        }
+      });
+
+      function filterRows(term) {
+        [...cartTable.rows].forEach(row => {
+          const title = row.cells[2].textContent.toLowerCase(); // Title column
+          row.style.display = title.includes(term) ? '' : 'none';
+        });
+      }
+
+      searchBtn.addEventListener('click', () => {
+        const term = searchInput.value.toLowerCase();
+        filterRows(term);
+      });
+
+      showAllBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        [...cartTable.rows].forEach(row => row.style.display = '');
+      });
+
+      const payBtn = document.getElementById("payBtn");
+      const paymentModal = document.getElementById("paymentModal");
+      const closeModal = document.getElementById("closeModal");
+
+      const cashPaymentBtn = document.getElementById("cashPayment");
+      const onlinePaymentBtn = document.getElementById("onlinePayment");
+
+      // Open modal with animation
+      payBtn.addEventListener("click", () => {
+        paymentModal.style.display = "flex";
+
+        // trigger fade-in animation
+        requestAnimationFrame(() => {
+          paymentModal.classList.add("show");
+        });
+      });
+
+      // Close modal with animation
+      closeModal.addEventListener("click", () => {
+        paymentModal.classList.remove("show");
+
+        // wait for animation to end before hiding completely
+        setTimeout(() => {
+          paymentModal.style.display = "none";
+        }, 300); // matches CSS transition duration
+      });
+
+      // ✅ Cash Payment
+      cashPaymentBtn.addEventListener("click", async () => {
+        const cartItems = [];
+        [...cartTable.rows].forEach(row => {
+          cartItems.push({
+            book_id: row.cells[0].textContent.trim(),
+            title: row.cells[2].textContent.trim(),
+            price: parseFloat(row.cells[6].textContent.trim()),
+            quantity: parseInt(row.querySelector(".qty-input").value)
+          });
+        });
+
+        // Call backend to place order with cash payment
+        const response = await fetch("/place_order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cart_items: cartItems, payment_mode: "Cash" })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          alert("✅ Order placed with Cash Payment.");
+          window.location.href = "/order_confirmation";
+        } else {
+          alert("❌ Error placing order: " + data.message);
+        }
+      });
+
+      // ✅ Online Payment (Razorpay)
+      onlinePaymentBtn.addEventListener("click", async () => {
+        // ✅ Collect cart items from table
+        let cartItems = [];
+        [...cartTable.rows].forEach(row => {
+          const bookId = row.cells[0].textContent.trim();
+          const title = row.cells[2].textContent.trim();
+          const price = parseFloat(row.cells[6].textContent.trim());
+          const qty = parseInt(row.querySelector(".qty-input").value);
+          cartItems.push({ book_id: bookId, title: title, price: price, quantity: qty });
+        });
+
+        // ❌ If cart is empty → show error and stop
+        if (cartItems.length === 0) {
+          alert("❌ Your cart is empty. Please add items before making payment.");
+          paymentModal.style.display = "none"; // close modal
+          return;
+        }
+
+        // ✅ Get the total cost dynamically
+        const grandTotal = parseFloat(
+          document.getElementById("totalCost").textContent.replace("₹", "")
+        );
+
+        // 1. Ask backend to create Razorpay order
+        const res = await fetch("/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: grandTotal })
+        });
+        const order = await res.json();
+
+        // 2. Open Razorpay Checkout
+        const options = {
+          key: "rzp_test_RPHAIPIzWjYcBl",
+          amount: order.amount,
+          currency: order.currency,
+          name: "Encore Library",
+          description: "E-Book Purchase",
+          order_id: order.id,
+          handler: async function (response) {
+            console.log("Payment response from Razorpay:", response);
+
+            // Verify payment on backend
+            const verify = await fetch("/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response)
+            });
+
+            const result = await verify.json();
+            if (result.ok) {
+              // ✅ Send cart items to backend
+              const orderRes = await fetch("/place_order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cart_items: cartItems, payment_mode: "Online" })
+              });
+              const orderData = await orderRes.json();
+
+              if (orderData.success) {
+                alert("✅ Payment & Order Placed Successfully!");
+                window.location.href = "/order_confirmation";
+              } else {
+                alert("⚠️ Payment success but order placement failed: " + orderData.message);
+              }
+            } else {
+              alert("❌ Payment verification failed: " + result.message);
+            }
+          },
+          theme: { color: "#2563eb" }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+      });
+          
+  </script>
+
+</body>
+</html>

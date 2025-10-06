@@ -1,0 +1,86 @@
+/* Base font styling */
+body {
+  font-family: 'Times New Roman' , serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fefefe;
+  color: #333;
+}
+
+/* Heading bar with title and back link */
+.book-header {
+  display: center;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff; /* Gold bar */
+  padding: 15px;
+  position: relative;
+}
+
+.book-title {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+
+.back-link {
+  display: left;
+  background-color: #28a745;   /* Green background */
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+.back-link:hover {
+  background-color: red;
+}
+
+/* Book detail layout */
+.book-detail {
+  padding: 30px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Centered image */
+.book-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.book-image {
+  width: 300px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+
+/* Left-aligned book info */
+.book-info p {
+  font-size: 18px;
+  margin: 12px 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .book-title {
+    font-size: 20px;
+  }
+
+  .back-link {
+    font-size: 14px;
+  }
+
+  .book-info p {
+    font-size: 16px;
+  }
+}

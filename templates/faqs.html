@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ Section</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='faqs.css') }}">
+</head>
+<body>
+   <!-- Navigation Bar -->
+  <header>
+    <div class="navbar">
+      <div class="logo">Encore Library</div>
+      <ul class="menu">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li class="dropdown">
+        <a href="#">Book Category ▼</a>
+        <ul class="dropdown-menu">
+           <li><a href="{{ url_for('computer') }}">Computer Engineering</a></li>
+            <li><a href="{{ url_for('electronics') }}">Electronics Engineering</a></li>
+            <li><a href="{{ url_for('mechanical') }}">Mechanical Engineering</a></li>
+            <li><a href="{{ url_for('it') }}">Information_Technology</a></li>
+            <li><a href="{{ url_for('civil') }}">Civil Engineering</a></li>
+            <li><a href="{{ url_for('aerospace') }}">Aerospace Engineering</a></li>
+            <li><a href="{{ url_for('chemical') }}">Chemical Engineering</a></li>
+            <li><a href="{{ url_for('automobile') }}">Automobile Engineering</a></li>
+            <li><a href="{{ url_for('biomedical') }}">Biomedical Engineering</a></li>
+
+        </ul>
+        </li>
+        
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('faqs') }}">FAQs</a></li>  
+        <li><a href="{{ url_for('feedback') }}">Feedback</a></li> 
+        
+      </ul>
+      <div class="search-cart">
+        <input type="text" id="searchInput" placeholder="Search book here" autocomplete="off">
+        <button id="searchBtn">🔍</button>
+        <ul id="suggestionsList" class="suggestions"></ul>
+        <div class="dropdown">
+          <a href="{{ url_for('profile') }}" class="dropbtn">My Account ▼</a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('profile') }}">My Profile</a>
+            <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('wishlist') }}">My Wishlist</a>
+            <a href="{{ url_for('orders') }}">My Orders</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}">Sign Out</a>
+          </div>
+        </div>
+        <a href="{{ url_for('cart') }}">My Cart</a>
+      </div>
+    </div>
+  </header>
+  
+  <section class="faq-section">
+    <div class="faq-container">
+      <!-- Left Illustration -->
+      <div class="faq-illustration">
+          <img src="{{ url_for('static', filename='icons/faq-illustration.png') }}" alt="FAQ">
+      </div>
+
+      <!-- Right FAQ Content -->
+      <div class="faq-content">
+        <h2>Frequently Asked Questions</h2>
+
+        <!-- 1 -->
+        <div class="faq-item active">
+          <button class="faq-question">What is Encore Library?</button>
+          <div class="faq-answer">
+            <p>
+              Encore Library is an online platform designed especially for engineering students to browse, purchase, 
+              and receive textbooks and reference materials for various engineering streams. It provides a simple and 
+              secure way to order academic books online, with doorstep delivery for a smooth and reliable shopping experience.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="faq-item">
+          <button class="faq-question">Which engineering branches are available on Encore Library?</button>
+          <div class="faq-answer">
+            <p>
+              We offer books across multiple disciplines including Computer, Electronics, Mechanical, Civil, IT, 
+              Chemical, Automobile, Biomedical, and Aerospace Engineering. Each branch includes subject-specific 
+              textbooks, lab manuals, and exam preparation guides.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="faq-item">
+          <button class="faq-question">How do I purchase a book?</button>
+          <div class="faq-answer">
+            <p>
+              Simply browse your preferred category, add the desired book to your cart, and proceed to checkout. 
+              Once payment is confirmed book will be shipped 
+              to your address within a few business days.
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="faq-item">
+          <button class="faq-question">Do I need an account to use Encore Library?</button>
+          <div class="faq-answer">
+            <p>
+              Yes. Creating an account helps you manage your purchases, save your wishlist, and securely access your 
+              downloaded eBooks anytime. Registration is quick, free, and requires only a valid email address.
+            </p>
+          </div>
+        </div>
+
+        
+
+        <!-- 6 -->
+        <div class="faq-item">
+          <button class="faq-question">Are the books aligned with university syllabus?</button>
+          <div class="faq-answer">
+            <p>
+              Yes. All textbooks and reference materials are curated based on major Indian university syllabi, 
+              AICTE-approved courses, and the latest technological updates to ensure that students get 
+              relevant and up-to-date content.
+            </p>
+          </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="faq-item">
+          <button class="faq-question">What payment methods are accepted?</button>
+          <div class="faq-answer">
+            <p>
+              Encore Library offers two payment options: Cash on Delivery (COD) and Online Payment. 
+              If you choose cash payment, you can pay when the books are delivered to you. 
+              For online payments, transactions are processed securely through Razorpay using UPI, debit or credit cards, net banking, or digital wallets.
+            </p>
+          </div>
+        </div>
+
+        
+
+        
+        <!-- 10 -->
+        <div class="faq-item">
+          <button class="faq-question">Is Encore Library only for students?</button>
+          <div class="faq-answer">
+            <p>
+              While Encore Library is primarily designed for engineering students, educators and professionals can 
+              also benefit from our vast collection of technical reference books and research materials.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+   <!-- Footer Section -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-box">
+      <h3>Engineering Book Store</h3>
+      <p>Engineering Book store is an online web application where the customer can purchase engineering books online. Through a web browser the customers can search for a book by its title or author, later can add to the shopping cart and finally purchase using credit card transaction.</p>
+    </div>
+    <div class="footer-box">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#">Book Category</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Terms and Conditions</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-box">
+      <h3>Contact Details</h3>
+      <p>📍 New Panvel, Maharashtra, India</p>
+      <p>📞 +92 3092367312</p>
+      <p>✉️ onlinebookstore@gmail.com</p>
+    </div>
+    <div class="footer-box">
+      <h3>Follow Us</h3>
+      <p><a href="#">📘 facebook.com/Online_Book_Store</a></p>
+      <p><a href="#">📸 instagram.com/onlinebookstore</a></p>
+      <p><a href="#">🐦 twitter.com/online_Book_Store</a></p>
+      <p><a href="#">▶️ youtube.com/OnlineBookStore</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="copyright">© CopyRight 2025 Online Book Store. All Right Reserved</p>
+  </div>
+</footer>
+
+
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+      question.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+
+        faqItems.forEach(i => i.classList.remove('active'));
+
+        if (!isActive) {
+          item.classList.add('active');
+        }
+      });
+    });
+    const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const suggestionsList = document.getElementById("suggestionsList");
+
+// 🔍 Fetch suggestions dynamically
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+
+  // Hide if too short
+  if (query.length < 2) {
+    suggestionsList.style.display = "none";
+    return;
+  }
+
+  try {
+    // ✅ Fetch from Flask JSON route
+    const res = await fetch(`/search_suggestions?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    // Clear old suggestions
+    suggestionsList.innerHTML = "";
+
+    if (data.length > 0) {
+      data.forEach(book => {
+        const li = document.createElement("li");
+        li.textContent = book;
+
+        // ✅ When user clicks a suggestion
+        li.addEventListener("click", () => {
+          searchInput.value = book;
+          suggestionsList.style.display = "none";
+
+          // Redirect to Flask route to render HTML
+          window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+        });
+
+        suggestionsList.appendChild(li);
+      });
+
+      suggestionsList.style.display = "block";
+    } else {
+      suggestionsList.style.display = "none";
+    }
+
+  } catch (error) {
+    console.error("⚠️ Error fetching suggestions:", error);
+    suggestionsList.style.display = "none";
+  }
+});
+
+// ✅ Clicking search button
+searchBtn.addEventListener("click", () => {
+  const book = searchInput.value.trim();
+  if (book) {
+    // Redirect to results page mode
+    window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+  } else {
+    alert("Please enter a book name to search!");
+  }
+});
+
+// ✅ Pressing Enter key
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const book = searchInput.value.trim();
+    if (book) {
+      window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+    } else {
+      alert("Please enter a book name to search!");
+    }
+  }
+});
+
+// ✅ Hide dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-cart")) {
+    suggestionsList.style.display = "none";
+  }
+});
+  </script>
+</body>
+</html>

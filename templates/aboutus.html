@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Online Book Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='aboutus.css') }}">
+</head>
+<body>
+<header>
+    <div class="navbar">
+      <div class="logo">Encore Library</div>
+      <ul class="menu">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li class="dropdown">
+        <a href="#">Book Category ▼</a>
+        <ul class="dropdown-menu">
+           <li><a href="{{ url_for('computer') }}">Computer Engineering</a></li>
+            <li><a href="{{ url_for('electronics') }}">Electronics Engineering</a></li>
+            <li><a href="{{ url_for('mechanical') }}">Mechanical Engineering</a></li>
+            <li><a href="{{ url_for('it') }}">Information_Technology</a></li>
+            <li><a href="{{ url_for('civil') }}">Civil Engineering</a></li>
+            <li><a href="{{ url_for('aerospace') }}">Aerospace Engineering</a></li>
+            <li><a href="{{ url_for('chemical') }}">Chemical Engineering</a></li>
+            <li><a href="{{ url_for('automobile') }}">Automobile Engineering</a></li>
+            <li><a href="{{ url_for('biomedical') }}">Biomedical Engineering</a></li>
+
+        </ul>
+        </li>
+        
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('faqs') }}">FAQs</a></li>  
+        <li><a href="{{ url_for('feedback') }}">Feedback</a></li> 
+        
+      </ul>
+      <div class="search-cart">
+        <input type="text" id="searchInput" placeholder="Search book here" autocomplete="off">
+        <button id="searchBtn">🔍</button>
+        <ul id="suggestionsList" class="suggestions"></ul>
+        <div class="dropdown">
+          <a href="{{ url_for('profile') }}" class="dropbtn">My Account ▼</a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('profile') }}">My Profile</a>
+            <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('wishlist') }}">My Wishlist</a>
+            <a href="{{ url_for('orders') }}">My Orders</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}">Sign Out</a>
+          </div>
+        </div>
+        <a href="{{ url_for('cart') }}">My Cart</a>
+      </div>
+    </div>
+  </header>
+  
+
+  <!-- About Us Section -->
+  <section class="about-section">
+    
+        <!-- About Us -->
+    <div class="about-title">Overview</div>
+    <p class="about-text">
+      <strong>Encore Library</strong>, established in 2025, is a dedicated online bookstore built exclusively for
+      engineering students. Our mission is to provide easy access to authentic, affordable, and high-quality textbooks,
+      reference materials, and academic resources across all branches of engineering — helping students excel in their
+      academic and professional journeys.
+    </p>
+    <p class="about-text">
+      Encore Library specializes in books across various streams including <strong>Computer Engineering</strong>,
+      <strong>Electronics Engineering</strong>, <strong>Mechanical Engineering</strong>, <strong>Information Technology</strong>,
+      <strong>Civil Engineering</strong>, <strong>Aerospace Engineering</strong>, <strong>Chemical Engineering</strong>,
+      <strong>Automobile Engineering</strong>, and <strong>Biomedical Engineering</strong>. Each stream features a wide
+      collection of subject-wise textbooks, lab manuals, project guides, and exam preparation materials — all curated
+      to meet university syllabi and modern industry trends.
+    </p>
+
+    <!-- Our History -->
+    <div class="about-title">Our History</div>
+    <p class="about-text">
+      Founded by a group of passionate educators and engineers, Encore Library began as a small initiative to make
+      academic books more accessible to students in technical institutions. Within a short time, it evolved into a
+      comprehensive digital platform, connecting thousands of learners to essential study materials and reference books
+      for every engineering discipline.
+    </p>
+
+    <!-- Our Mission -->
+    <div class="about-title">Our Mission</div>
+    <p class="about-text">
+      Our mission is to empower every engineering student with the right learning resources — anytime, anywhere.
+      We aim to bridge the gap between students and knowledge by offering a single online platform for course materials,
+      academic support, and competitive exam preparation.
+    </p>
+
+    <!-- Our Vision -->
+    <div class="about-title">Our Vision</div>
+    <p class="about-text">
+      At <strong>Encore Library</strong>, we envision creating a nationwide academic ecosystem where every engineering
+      student can learn, explore, and innovate without limitations. Our goal is to become India’s most trusted
+      destination for engineering education resources — nurturing the next generation of skilled professionals and innovators.
+    </p>
+
+  </section>
+  <!-- Footer Section -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-box">
+      <h3>Engineering Book Store</h3>
+      <p>Engineering Book store is an online web application where the customer can purchase engineering books online. Through a web browser the customers can search for a book by its title or author, later can add to the shopping cart and finally purchase using credit card transaction.</p>
+    </div>
+    <div class="footer-box">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#">Book Category</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Terms and Conditions</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-box">
+      <h3>Contact Details</h3>
+      <p>📍 New Panvel, Maharashtra, India</p>
+      <p>📞 +92 3092367312</p>
+      <p>✉️ onlinebookstore@gmail.com</p>
+    </div>
+    <div class="footer-box">
+      <h3>Follow Us</h3>
+      <p><a href="#">📘 facebook.com/Online_Book_Store</a></p>
+      <p><a href="#">📸 instagram.com/onlinebookstore</a></p>
+      <p><a href="#">🐦 twitter.com/online_Book_Store</a></p>
+      <p><a href="#">▶️ youtube.com/OnlineBookStore</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="copyright">© CopyRight 2025 Online Book Store. All Right Reserved</p>
+  </div>
+</footer>
+
+</body>
+</html>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const suggestionsList = document.getElementById("suggestionsList");
+
+// 🔍 Fetch suggestions dynamically
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+
+  // Hide if too short
+  if (query.length < 2) {
+    suggestionsList.style.display = "none";
+    return;
+  }
+
+  try {
+    // ✅ Fetch from Flask JSON route
+    const res = await fetch(`/search_suggestions?query=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    // Clear old suggestions
+    suggestionsList.innerHTML = "";
+
+    if (data.length > 0) {
+      data.forEach(book => {
+        const li = document.createElement("li");
+        li.textContent = book;
+
+        // ✅ When user clicks a suggestion
+        li.addEventListener("click", () => {
+          searchInput.value = book;
+          suggestionsList.style.display = "none";
+
+          // Redirect to Flask route to render HTML
+          window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+        });
+
+        suggestionsList.appendChild(li);
+      });
+
+      suggestionsList.style.display = "block";
+    } else {
+      suggestionsList.style.display = "none";
+    }
+
+  } catch (error) {
+    console.error("⚠️ Error fetching suggestions:", error);
+    suggestionsList.style.display = "none";
+  }
+});
+
+// ✅ Clicking search button
+searchBtn.addEventListener("click", () => {
+  const book = searchInput.value.trim();
+  if (book) {
+    // Redirect to results page mode
+    window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+  } else {
+    alert("Please enter a book name to search!");
+  }
+});
+
+// ✅ Pressing Enter key
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const book = searchInput.value.trim();
+    if (book) {
+      window.location.href = `/search_suggestions?query=${encodeURIComponent(book)}&mode=page`;
+    } else {
+      alert("Please enter a book name to search!");
+    }
+  }
+});
+
+// ✅ Hide dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-cart")) {
+    suggestionsList.style.display = "none";
+  }
+});
+</script>
